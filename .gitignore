@@ -10,3 +10,4 @@ kaggle.json
 # Собранные данные (регенерируются агентом, ~6GB)
 data/raw/*
 !data/raw/.gitkeep
+!data/raw/unified_news.csv
