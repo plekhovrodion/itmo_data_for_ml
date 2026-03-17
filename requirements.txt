@@ -23,3 +23,6 @@ ipython>=8.0.0
 
 # ML utilities
 scikit-learn>=1.3.0
+
+# LLM bonus (DataQualityAgent explain_and_recommend)
+anthropic>=0.18.0

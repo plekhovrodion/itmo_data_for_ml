@@ -11,6 +11,7 @@
 ## Описание задачи
 
 Создание унифицированного датасета новостей для ML-задач:
+
 - Суммаризация текстов
 - Классификация по категориям
 - Анализ тональности
@@ -94,31 +95,36 @@ python agents/data_collection_agent.py --config config.yaml --output data/raw/un
 
 ## Источники данных
 
-| Источник | Тип | Папка | Описание |
-|---------|-----|-------|----------|
-| IlyaGusev/gazeta | HuggingFace | hf_IlyaGusev_gazeta/ | Новости Gazeta.ru с суммаризацией |
-| yutkin/corpus-of-russian-news-articles-from-lenta | Kaggle | kaggle_yutkin_*/ | Новости Lenta.ru |
-| vfomenko/russian-news-2020 | Kaggle | kaggle_vfomenko_*/ | Русские новости 2020 |
-| vyhuholl/large-russian-news-dataset | Kaggle | kaggle_vyhuholl_*/ | Большой датасет русских новостей |
-| Lenta, RIA, TASS, Kommersant | RSS | parsed_rss/<feed>/ | RSS-ленты (feedparser) |
-| Lenta, RIA, TASS | HTML | parsed_html/<site>/ | Скрапинг главных страниц (BeautifulSoup) |
+
+| Источник                                          | Тип         | Папка                | Описание                                 |
+| ------------------------------------------------- | ----------- | -------------------- | ---------------------------------------- |
+| IlyaGusev/gazeta                                  | HuggingFace | hf_IlyaGusev_gazeta/ | Новости Gazeta.ru с суммаризацией        |
+| yutkin/corpus-of-russian-news-articles-from-lenta | Kaggle      | kaggle_yutkin_*/     | Новости Lenta.ru                         |
+| vfomenko/russian-news-2020                        | Kaggle      | kaggle_vfomenko_*/   | Русские новости 2020                     |
+| vyhuholl/large-russian-news-dataset               | Kaggle      | kaggle_vyhuholl_*/   | Большой датасет русских новостей         |
+| Lenta, RIA, TASS, Kommersant                      | RSS         | parsed_rss//         | RSS-ленты (feedparser)                   |
+| Lenta, RIA, TASS                                  | HTML        | parsed_html//        | Скрапинг главных страниц (BeautifulSoup) |
+
 
 ## Схема выходных данных
 
-| Колонка | Тип | Описание |
-|---------|-----|----------|
-| title | str | Заголовок |
-| text | str | Текст статьи |
-| summary | str | Краткое содержание |
-| url | str | Ссылка на источник |
-| published_at | datetime | Дата публикации |
-| category | str | Категория |
-| source | str | Источник (hf:*, kaggle:*, parsed_rss:*, parsed_html:*) |
-| collected_at | datetime | Время сбора |
+
+| Колонка      | Тип      | Описание                                               |
+| ------------ | -------- | ------------------------------------------------------ |
+| title        | str      | Заголовок                                              |
+| text         | str      | Текст статьи                                           |
+| summary      | str      | Краткое содержание                                     |
+| url          | str      | Ссылка на источник                                     |
+| published_at | datetime | Дата публикации                                        |
+| category     | str      | Категория                                              |
+| source       | str      | Источник (hf:*, kaggle:*, parsed_rss:*, parsed_html:*) |
+| collected_at | datetime | Время сбора                                            |
+
 
 ## Конфигурация
 
 Параметры в `config.yaml`:
+
 - `limit` — лимит записей на источник (HF, Kaggle)
 - `limit_per_feed` — лимит на RSS-фид
 - `target_size` — целевой размер итогового датасета (10000)
