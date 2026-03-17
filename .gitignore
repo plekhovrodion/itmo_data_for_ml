@@ -7,7 +7,8 @@ __pycache__/
 venv/
 kaggle.json
 
-# Собранные данные (регенерируются агентом, ~6GB)
-data/raw/*
-!data/raw/.gitkeep
-!data/raw/unified_news.csv
+# Файлы >100MB (лимит GitHub без LFS)
+data/raw/hf_IlyaGusev_gazeta/data.csv
+data/raw/kaggle_vyhuholl_large-russian-news-dataset/russian_news.csv
+data/raw/kaggle_vyhuholl_large-russian-news-dataset/russian_news_lemmatized.csv
+data/raw/kaggle_yutkin_corpus-of-russian-news-articles-from-lenta/lenta-ru-news.csv
