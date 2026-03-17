@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+.env
+*.egg-info/
+.venv/
+venv/
+kaggle.json
+
+# Собранные данные (регенерируются агентом, ~6GB)
+data/raw/*
+!data/raw/.gitkeep
