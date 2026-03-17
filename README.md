@@ -1,6 +1,6 @@
-# NewsCollectionAgent: Новости и медиа
+# NewsCollectionAgent + DataQualityAgent
 
-Агент для сбора и унификации новостей и медиа из множества источников: HuggingFace, Kaggle, RSS, HTML-парсинг.
+Агент для сбора и унификации новостей из множества источников (HuggingFace, Kaggle, RSS, HTML) и агент проверки качества данных.
 
 ## Результаты
 
@@ -17,23 +17,25 @@
 - Анализ тональности
 - Обучение языковых моделей
 
-## Архитектура агента
+## Архитектура агентов
 
-```
-NewsCollectionAgent/
-├── load_hf_dataset(name) -> DataFrame      # HuggingFace, кэш в hf_*/
-├── load_kaggle_dataset(name) -> DataFrame  # Kaggle, кэш в kaggle_*/
-├── load_rss_data(feeds) -> DataFrame       # RSS, кэш в parsed_rss/<feed>/
-├── load_html_data(url) -> DataFrame        # HTML-скрапинг, кэш в parsed_html/<site>/
-└── merge(sources) -> DataFrame
-```
+**DataCollectionAgent** — сбор данных:
+- `load_hf_dataset` / `load_kaggle_dataset` — HuggingFace, Kaggle
+- `load_rss_data` / `load_html_data` — RSS, HTML-скрапинг
+- `merge(sources)` — объединение в единый датасет
+
+**DataQualityAgent** — проверка качества:
+- `detect_issues(df)` — пропуски, дубликаты, выбросы, дисбаланс классов
+- `fix(df, strategy)` — устранение проблем
+- `compare(df_before, df_after)` — сравнение до/после
 
 ## Структура репозитория
 
 ```
 .
 ├── agents/
-│   └── data_collection_agent.py
+│   ├── data_collection_agent.py
+│   └── data_quality_agent.py
 ├── config.yaml
 ├── data/
 │   ├── raw/
@@ -53,7 +55,8 @@ NewsCollectionAgent/
 │   │   └── unified_news.csv           # Итоговый датасет
 │   └── processed/
 ├── notebooks/
-│   └── eda.ipynb
+│   ├── eda.ipynb                 # EDA датасета
+│   └── data_quality.ipynb        # Проверка качества (Detective, Surgeon, Argument)
 ├── requirements.txt
 └── README.md
 ```
@@ -91,6 +94,18 @@ agent.save(df, 'data/raw/unified_news.csv')
 
 ```bash
 python agents/data_collection_agent.py --config config.yaml --output data/raw/unified_news.csv
+```
+
+### Проверка качества данных
+
+```python
+from agents.data_quality_agent import DataQualityAgent
+import pandas as pd
+
+df = pd.read_csv('data/raw/unified_news.csv')
+agent = DataQualityAgent()
+report = agent.detect_issues(df)
+df_fixed = agent.fix(df, strategy='drop_duplicates')
 ```
 
 ## Источники данных
