@@ -47,10 +47,22 @@
 - Экспорт в формат Label Studio, спецификация задачи
 - В корне: [annotation_agent.py](annotation_agent.py) для импорта `from annotation_agent import AnnotationAgent`
 
+## Скиллы Cursor
+
+В каталоге [.cursor/skills/](.cursor/skills/) лежат **Agent Skills** для Cursor: краткие сценарии и API по каждому агенту.
+
+| Скилл | Файл | Когда подключается |
+|--------|------|---------------------|
+| Сбор данных | [data-collection-agent/SKILL.md](.cursor/skills/data-collection-agent/SKILL.md) | Сбор, источники, `config.yaml` |
+| Качество данных | [data-quality-agent/SKILL.md](.cursor/skills/data-quality-agent/SKILL.md) | Очистка, дубликаты, выбросы |
+| Active Learning | [active-learning-agent/SKILL.md](.cursor/skills/active-learning-agent/SKILL.md) | AL, `run.py`, сравнение стратегий |
+| Разметка | [annotation-agent/SKILL.md](.cursor/skills/annotation-agent/SKILL.md) | Zero-shot, Label Studio |
+
 ## Структура репозитория
 
 ```
 .
+├── .cursor/skills/          # Agent Skills (Cursor)
 ├── agents/
 │   ├── data_collection_agent.py
 │   ├── data_quality_agent.py
