@@ -10,6 +10,22 @@ kaggle.json
 # Копия ноутбука после nbconvert --execute (дублирует al_experiment.ipynb)
 notebooks/al_experiment_full.ipynb
 
+# Сбор данных и артефакты пайплайна (см. run_pipeline.py)
+data/raw/*.csv
+data/raw/**/data.csv
+data/processed/*
+!data/processed/.gitkeep
+data/labeled/*
+!data/labeled/.gitkeep
+models/*
+!models/.gitkeep
+reports/*
+!reports/.gitkeep
+review_queue.csv
+review_queue_corrected.csv
+review_labels_corrected.csv
+pipeline_run.log
+
 # Файлы >100MB (лимит GitHub без LFS)
 data/raw/hf_IlyaGusev_gazeta/data.csv
 data/raw/kaggle_vyhuholl_large-russian-news-dataset/russian_news.csv
