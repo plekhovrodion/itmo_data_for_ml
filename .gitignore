@@ -7,6 +7,9 @@ __pycache__/
 venv/
 kaggle.json
 
+# Копия ноутбука после nbconvert --execute (дублирует al_experiment.ipynb)
+notebooks/al_experiment_full.ipynb
+
 # Файлы >100MB (лимит GitHub без LFS)
 data/raw/hf_IlyaGusev_gazeta/data.csv
 data/raw/kaggle_vyhuholl_large-russian-news-dataset/russian_news.csv

@@ -1,12 +1,12 @@
-# NewsCollectionAgent + DataQualityAgent
+# ITMO: датасет новостей и агенты данных
 
-Агент для сбора и унификации новостей из множества источников (HuggingFace, Kaggle, RSS, HTML) и агент проверки качества данных.
+Репозиторий курса по данным для ML: сбор и унификация новостей, контроль качества, **active learning** для отбора примеров к разметке и **авторазметка** (zero-shot + экспорт в Label Studio).
 
 ## Результаты
 
-- **Всего записей**: ~10 000 (целевой размер)
-- **Источники**: HuggingFace (Gazeta), Kaggle (3 датасета), RSS (6 фидов), HTML (3 сайта)
-- **Структура**: каждый источник сохраняется в отдельную папку с кэшированием
+- **Всего записей** в `unified_news.csv`: порядка десяти тысяч (зависит от `config.yaml` и прогонов сбора)
+- **Источники**: HuggingFace (Gazeta), Kaggle (несколько датасетов), RSS, HTML-скрапинг
+- **Структура**: каждый источник кэшируется в своей папке под `data/raw/`
 
 ## Описание задачи
 
@@ -29,13 +29,39 @@
 - `fix(df, strategy)` — устранение проблем
 - `compare(df_before, df_after)` — сравнение до/после
 
+**ActiveLearningAgent** — умный отбор разметки ([agents/al_agent.py](agents/al_agent.py)):
+- `fit(labeled_df)` — TF-IDF + логистическая регрессия
+- `query(pool_df, strategy, batch_size)` — стратегии `entropy`, `margin`, `random`
+- `evaluate(labeled_df, test_df)` — accuracy и F1 macro на отложенной выборке
+- `report(history, path)` — график качества vs. `n_labeled`
+- `run_cycle(...)` — цикл: старт с 50 размеченных, 5 итераций по 20 примеров из пула
+- `prepare_al_data(df, ...)` — фильтр редких категорий (`category`, минимум 10 примеров), стратифицированный test 20% и начальный пул
+- `explain_selection(...)` — опционально Claude API (`ANTHROPIC_API_KEY`) для пояснения выбранных индексов
+
+Задача по умолчанию: многоклассовая классификация **темы** (`category`) по тексту `text` на строках, где категория заполнена.
+
+Импорт по контракту задания: `from al_agent import ActiveLearningAgent` (тонкий модуль в корне репозитория); альтернатива — `from agents.al_agent import ActiveLearningAgent`.
+
+**AnnotationAgent** — разметка и экспорт ([agents/annotation_agent.py](agents/annotation_agent.py)):
+- Zero-shot классификация (тональность, темы) через transformers
+- Экспорт в формат Label Studio, спецификация задачи
+- В корне: [annotation_agent.py](annotation_agent.py) для импорта `from annotation_agent import AnnotationAgent`
+
 ## Структура репозитория
 
 ```
 .
 ├── agents/
 │   ├── data_collection_agent.py
-│   └── data_quality_agent.py
+│   ├── data_quality_agent.py
+│   ├── annotation_agent.py
+│   └── al_agent.py
+├── run.py
+├── al_agent.py              # реэкспорт ActiveLearningAgent
+├── annotation_agent.py      # реэкспорт AnnotationAgent
+├── annotation_spec.md
+├── labelstudio_import.json
+├── labelstudio_review.json
 ├── config.yaml
 ├── data/
 │   ├── raw/
@@ -53,10 +79,11 @@
 │   │   │   ├── ria/data.csv
 │   │   │   └── tass/data.csv
 │   │   └── unified_news.csv           # Итоговый датасет
-│   └── processed/
+│   └── processed/           # кривые AL, выборки после разметки (png, csv)
 ├── notebooks/
 │   ├── eda.ipynb                 # EDA датасета
-│   └── data_quality.ipynb        # Проверка качества (Detective, Surgeon, Argument)
+│   ├── data_quality.ipynb        # Проверка качества (Detective, Surgeon, Argument)
+│   └── al_experiment.ipynb       # AL: entropy vs random, экономия разметки
 ├── requirements.txt
 └── README.md
 ```
@@ -68,6 +95,27 @@
 ```bash
 pip install -r requirements.txt
 ```
+
+### Active Learning (воспроизводимый запуск)
+
+После установки зависимостей и наличия `data/raw/unified_news.csv`:
+
+```bash
+python run.py
+```
+
+Скрипт вызывает `active_learning_op()`: стратифицированный сплит, цикл со стратегией `entropy`, сохранение кривой в `data/processed/learning_curve.png`.
+
+Сравнение **entropy** и **random** и оценка «сколько примеров сэкономлено» — в [notebooks/al_experiment.ipynb](notebooks/al_experiment.ipynb).
+
+После `pip install nbconvert` можно выполнить ноутбук из корня репозитория без открытия Jupyter:
+
+```bash
+python3 -m nbconvert --execute --to notebook --ExecutePreprocessor.timeout=600 \
+  --output al_experiment_full.ipynb notebooks/al_experiment.ipynb
+```
+
+Файл `al_experiment_full.ipynb` в списке выше не коммитится (см. `.gitignore`): достаточно исходного `al_experiment.ipynb`. График сравнения стратегий по умолчанию сохраняется в `data/processed/al_entropy_vs_random.png`.
 
 ### Kaggle API
 

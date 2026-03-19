@@ -17,12 +17,18 @@ matplotlib>=3.7.0
 seaborn>=0.12.0
 plotly>=5.15.0
 
-# EDA
+# EDA / ноутбуки
 jupyter>=1.0.0
 ipython>=8.0.0
+nbconvert>=7.0.0
 
 # ML utilities
 scikit-learn>=1.3.0
+
+# AnnotationAgent: zero-shot (текст) + Label Studio export
+torch>=2.0.0
+transformers>=4.36.0
+sentencepiece>=0.1.99
 
 # LLM bonus (DataQualityAgent explain_and_recommend)
 anthropic>=0.18.0
