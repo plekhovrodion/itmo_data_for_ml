@@ -161,12 +161,42 @@ class AnnotationAgent:
 
         # pipeline принимает список последовательностей
         batch_size = 8
-        for i in range(0, len(texts), batch_size):
+        n_texts = len(texts)
+        if n_texts == 0:
+            out[self.PRED_COL] = []
+            out[self.CONF_COL] = []
+            out["needs_review"] = []
+            return out
+
+        # Прогресс: раньше печатали каждые 1000 — при малых N в консоли «тишина» минутами.
+        if n_texts <= 30:
+            log_every = 1
+        elif n_texts <= 200:
+            log_every = 10
+        elif n_texts <= 5000:
+            log_every = max(25, n_texts // 40)
+        else:
+            log_every = 1000
+
+        print(
+            f"[AnnotationAgent] auto_label: старт, {n_texts} текстов "
+            f"(сообщения каждые {log_every}; первый вызов модели на CPU часто 1–5+ мин).",
+            flush=True,
+        )
+
+        done = 0
+        for i in range(0, n_texts, batch_size):
             chunk = texts[i : i + batch_size]
             for text in chunk:
                 if not text.strip():
                     pred_labels.append(labels[0])
                     confidences.append(0.0)
+                    done += 1
+                    if done == 1 or done % log_every == 0 or done == n_texts:
+                        print(
+                            f"[AnnotationAgent] auto_label: {done}/{n_texts}",
+                            flush=True,
+                        )
                     continue
                 res = clf(
                     text,
@@ -176,6 +206,12 @@ class AnnotationAgent:
                 )
                 pred_labels.append(res["labels"][0])
                 confidences.append(float(res["scores"][0]))
+                done += 1
+                if done == 1 or done % log_every == 0 or done == n_texts:
+                    print(
+                        f"[AnnotationAgent] auto_label: {done}/{n_texts}",
+                        flush=True,
+                    )
 
         out[self.PRED_COL] = pred_labels
         out[self.CONF_COL] = confidences

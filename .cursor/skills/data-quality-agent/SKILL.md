@@ -53,3 +53,5 @@ strategy = {'missing': 'fill_unknown', 'duplicates': 'drop', 'outliers': 'clip_i
 df_clean = agent.fix(df.copy(), strategy=strategy)
 agent.compare(df, df_clean)
 ```
+
+См. также: оркестрация и точки аппрува — [data-pipeline-hitl](../data-pipeline-hitl/SKILL.md).

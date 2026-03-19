@@ -38,7 +38,9 @@
 - `prepare_al_data(df, ...)` — фильтр редких категорий (`category`, минимум 10 примеров), стратифицированный test 20% и начальный пул
 - `explain_selection(...)` — опционально Claude API (`ANTHROPIC_API_KEY`) для пояснения выбранных индексов
 
-Задача по умолчанию: многоклассовая классификация **темы** (`category`) по тексту `text` на строках, где категория заполнена.
+Скрипт **`run_pipeline.py`** строит сквозной пайплайн на **тональности** (`sentiment_classification`): после авторазметки и HITL целевая колонка — `label_final` (см. раздел «Финальный пайплайн» ниже).
+
+Отдельно скрипт **`run.py`** оставлен для быстрого эксперимента: многоклассовая классификация **темы** (`category`) по `text` на уже готовом `unified_news.csv`.
 
 Импорт по контракту задания: `from al_agent import ActiveLearningAgent` (тонкий модуль в корне репозитория); альтернатива — `from agents.al_agent import ActiveLearningAgent`.
 
@@ -53,6 +55,7 @@
 
 | Скилл | Файл | Когда подключается |
 |--------|------|---------------------|
+| **Пайплайн + HITL** | [data-pipeline-hitl/SKILL.md](.cursor/skills/data-pipeline-hitl/SKILL.md) | Сквозной сценарий, `run_pipeline.py`, аппрувы между этапами |
 | Сбор данных | [data-collection-agent/SKILL.md](.cursor/skills/data-collection-agent/SKILL.md) | Сбор, источники, `config.yaml` |
 | Качество данных | [data-quality-agent/SKILL.md](.cursor/skills/data-quality-agent/SKILL.md) | Очистка, дубликаты, выбросы |
 | Active Learning | [active-learning-agent/SKILL.md](.cursor/skills/active-learning-agent/SKILL.md) | AL, `run.py`, сравнение стратегий |
@@ -69,9 +72,18 @@
 │   ├── annotation_agent.py
 │   └── al_agent.py
 ├── run.py
+├── run_pipeline.py          # финальный пайплайн: 4 агента + HITL + AL + модель
+├── pipeline_config.yaml     # параметры пайплайна (стратегия чистки, AL, порог HITL)
+├── pipeline_config.fast.yaml # меньше строк для ускоренного прогона
+├── pipeline_config.smoke.yaml # мало строк + задуман под --mock-annotation
+├── pipeline_config.max20.yaml # max_rows: 20 + согласованные малые параметры AL
 ├── al_agent.py              # реэкспорт ActiveLearningAgent
 ├── annotation_agent.py      # реэкспорт AnnotationAgent
-├── annotation_spec.md
+├── review_queue.csv         # HITL: очередь на проверку (генерируется пайплайном)
+├── review_labels_corrected.csv # HITL: узкая таблица row_id + метки (предпочтительно для Excel)
+├── review_queue_corrected.csv # HITL: полный CSV с text (Excel часто портит последнюю колонку)
+├── models/                  # сохранённая модель после run_pipeline (joblib)
+├── reports/                 # quality_report.md, annotation_spec.md, al_*, model_metrics.json
 ├── labelstudio_import.json
 ├── labelstudio_review.json
 ├── config.yaml
@@ -91,7 +103,8 @@
 │   │   │   ├── ria/data.csv
 │   │   │   └── tass/data.csv
 │   │   └── unified_news.csv           # Итоговый датасет
-│   └── processed/           # кривые AL, выборки после разметки (png, csv)
+│   ├── labeled/             # итог после пайплайна: final.parquet
+│   └── processed/           # cleaned, annotated, merged_after_hitl, learning_curve.png
 ├── notebooks/
 │   ├── eda.ipynb                 # EDA датасета
 │   ├── data_quality.ipynb        # Проверка качества (Detective, Surgeon, Argument)
@@ -107,6 +120,70 @@
 ```bash
 pip install -r requirements.txt
 ```
+
+Нужны **PyTorch + transformers** (для `AnnotationAgent`), **pyarrow** (parquet), **joblib** (сохранение модели) — всё перечислено в `requirements.txt`.
+
+**Воспроизводимость для сдачи финального проекта:** основная команда — **`python run_pipeline.py`** (полный пайплайн: 4 агента, HITL, AL, модель). Скрипт **`run.py`** — отдельный демо-запуск active learning по колонке `category` на уже готовом `unified_news.csv`, без авторазметки и HITL; для критерия «единый пайплайн» используйте `run_pipeline.py`.
+
+### Финальный пайплайн (`run_pipeline.py`)
+
+Один сценарий оркестрации на чистом Python: **сбор → чистка → zero-shot тональность → HITL → active learning → обучение TF-IDF + LogReg → артефакты**.
+
+```bash
+# Полный прогон с нуля (нужны сеть, при необходимости Kaggle API)
+python run_pipeline.py
+
+# Уже есть data/raw/unified_news.csv — пропустить сбор
+python run_pipeline.py --skip-collect
+```
+
+**Human-in-the-loop (обязательная правка данных):** после авторазметки создаются **`review_queue.csv`** (полный текст) и **`review_labels_corrected.csv`** (только `row_id`, `pred_label`, `confidence`, `corrected_label`). **Удобнее править узкий файл** — Excel при сохранении широкого CSV с переносами строк в тексте часто обрезает последнюю колонку. Заполните **`corrected_label`**: `positive` / `negative` / `neutral` для каждой строки (UTF-8 CSV). Альтернатива — **`review_queue_corrected.csv`**. Затем:
+
+```bash
+python run_pipeline.py --from-step merge-hitl --skip-collect
+```
+
+Если низкоуверенных строк нет, пайплайн идёт дальше без остановки.
+
+Параметры стратегии чистки, AL и обучения — в [`pipeline_config.yaml`](pipeline_config.yaml). Для быстрой проверки без долгой разметки можно использовать [`pipeline_config.fast.yaml`](pipeline_config.fast.yaml):
+
+```bash
+python run_pipeline.py --skip-collect --config pipeline_config.fast.yaml
+```
+
+**Проверка, что цепочка не сломана (без zero-shot, ~секунды):** синтетические метки вместо `transformers`; у всех строк **`confidence` 0.99** — при пороге 0.7 очередь HITL обычно пуста. Для отработки ручной проверки используйте реальную авторазметку без `--mock-annotation` или поднимите **`annotation.confidence_threshold`** (например 0.999).
+
+```bash
+python run_pipeline.py --skip-collect --mock-annotation --config pipeline_config.smoke.yaml
+```
+
+Реальная авторазметка без `--mock-annotation` на десятках тысяч строк на CPU может занимать **часы**; в консоли печатается прогресс (частота зависит от объёма). Лимит строк: `annotation.max_rows` в yaml или флаг **`--annotate-max-rows N`**. Если `N` маленький, снизьте **`al.min_class_count`** и **`initial_labeled`** (см. готовый профиль **`pipeline_config.max20.yaml`**), иначе `prepare_al_data` упадёт: после фильтра редких классов не останется строк.
+
+**Артефакты:**
+
+| Путь | Содержимое |
+|------|------------|
+| `data/raw/unified_news.csv` | сырой объединённый датасет |
+| `data/processed/cleaned.parquet` | после `DataQualityAgent.fix` |
+| `data/processed/annotated.parquet` | + `pred_label`, `confidence`, `row_id` |
+| `data/processed/merged_after_hitl.parquet` | + `label_final` |
+| `data/labeled/final.parquet` | подмножество строк после AL (размер = финальный labeled pool) |
+| `reports/quality_report.md` | `detect_issues`, `compare`, опционально Claude (`ANTHROPIC_API_KEY`) |
+| `reports/annotation_spec.md`, `annotation_report.md` | спецификация и метрики авторазметки |
+| `reports/al_report.md`, `al_history.json`, `data/processed/learning_curve.png` | AL |
+| `reports/model_metrics.json` | accuracy и F1 macro на отложенном тесте |
+| `models/sentiment_tfidf_logreg.joblib` | векторизатор + классификатор |
+
+**Data card (итоговый размеченный датасет, `data/labeled/final.*`):**
+
+- **Модальность:** текст (русскоязычные новости).
+- **Задача:** трёхклассовая **тональность** (`label_final`: positive, negative, neutral).
+- **Источники:** см. `config.yaml` и таблицу «Источники данных» ниже; итог сбора — `unified_news.csv`.
+- **Разметка:** zero-shot (`MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7`) + слияние с ручными правками из HITL для низкой уверенности.
+- **Объём и классы:** после прогона уточните по `final.parquet` (число строк, `value_counts` по `label_final`); изначальный объём сырья задаётся `target_size` в `config.yaml`.
+- **Ограничения:** в шаге AL метки в пуле известны симулятору (как прокси стоимости разметки); в проде здесь был бы второй раунд ручной разметки отобранных индексов.
+
+**Бонус (+3):** при заданном `ANTHROPIC_API_KEY` в отчёт качества добавляется `explain_and_recommend`; в `al_report.md` — `explain_selection` для первого батча.
 
 ### Active Learning (воспроизводимый запуск)
 
@@ -203,6 +280,18 @@ df_fixed = agent.fix(df, strategy='drop_duplicates')
 - `limit` — лимит записей на источник (HF, Kaggle)
 - `limit_per_feed` — лимит на RSS-фид
 - `target_size` — целевой размер итогового датасета (10000)
+
+Параметры **`run_pipeline.py`** — в `pipeline_config.yaml` (стратегия `DataQualityAgent`, порог HITL, гиперпараметры AL и LogReg).
+
+## Финальный отчёт (5 разделов для сдачи)
+
+Заполните по результатам своего прогона (числа — из `reports/*`, `final.parquet`, ноутбуков).
+
+1. **Задача и датасет** — модальность (текст), ориентировочный объём после сбора и после чистки, классы тональности, откуда взяты данные (2+ источника через `DataCollectionAgent`).
+2. **Роль агентов** — какие решения приняты: источники и `target_size` (сбор), стратегия `fix` и что удалили/сохранили (качество), задача и модель zero-shot (разметка), стратегия AL и размеры пула (отбор), архитектура классификатора (обучение).
+3. **HITL** — порог уверенности; сколько строк в `review_queue.csv`; сколько меток исправлено и типичные ошибки авторазметки; при необходимости — как подтверждали стратегию чистки по `quality_report.md`.
+4. **Метрики по этапам** — кратко: что показал `detect_issues` / `compare`; средняя уверенность и распределение `pred_label` до правок; динамика accuracy/F1 в `al_history.json` и на графике; **итоговые** accuracy и F1 macro из `model_metrics.json` на отложенном тесте.
+5. **Ретроспектива** — что сработало (например, entropy vs random, эффект HITL), что нет, что бы изменили (другая модель, больше ручной разметки, другой порог, убрать симуляцию оракула в AL).
 
 ## Лицензия
 

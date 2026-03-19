@@ -84,3 +84,5 @@ mkdir -p ~/.kaggle
 cp path/to/kaggle.json ~/.kaggle/
 chmod 600 ~/.kaggle/kaggle.json
 ```
+
+См. также: оркестрация и точки аппрува — [data-pipeline-hitl](../data-pipeline-hitl/SKILL.md).

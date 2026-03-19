@@ -1,0 +1,24 @@
+# ~20 строк после clean: параметры AL уменьшены, иначе prepare_al_data падает
+annotation:
+  task: sentiment_classification
+  confidence_threshold: 0.7
+  max_rows: 20
+quality:
+  strategy:
+    missing: drop
+    duplicates: drop
+    outliers: drop
+al:
+  strategy: entropy
+  n_iterations: 2
+  batch_size: 4
+  min_class_count: 2
+  test_size: 0.2
+  initial_labeled: 6
+  random_state: 42
+train:
+  random_state: 42
+  max_features: 4000
+  ngram_range: [1, 2]
+  logreg_C: 1.0
+  max_iter: 300

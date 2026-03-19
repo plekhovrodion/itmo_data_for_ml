@@ -49,3 +49,5 @@ agent.report(history, path="data/processed/learning_curve.png")
 
 - Задача: классификация `category` по `text` (строки с непустой категорией).
 - Старт: 50 примеров; 5 итераций × 20 примеров → 150 размеченных к концу цикла.
+
+См. также: сквозной пайплайн с `label_final` и аппрувами — [data-pipeline-hitl](../data-pipeline-hitl/SKILL.md).

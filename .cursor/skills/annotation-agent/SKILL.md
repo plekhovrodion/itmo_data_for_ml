@@ -38,3 +38,5 @@ agent.export_to_labelstudio(out, "labelstudio_import.json")
 ## Label Studio
 
 Поля в конфиге LS должны совпадать с константами в модуле: ключ данных `text`, choices `sentiment` → `text` (см. docstring в `agents/annotation_agent.py`).
+
+См. также: оркестрация и HITL после низкой уверенности — [data-pipeline-hitl](../data-pipeline-hitl/SKILL.md).
