@@ -168,19 +168,12 @@ class AnnotationAgent:
             out["needs_review"] = []
             return out
 
-        # Прогресс: раньше печатали каждые 1000 — при малых N в консоли «тишина» минутами.
-        if n_texts <= 30:
-            log_every = 1
-        elif n_texts <= 200:
-            log_every = 10
-        elif n_texts <= 5000:
-            log_every = max(25, n_texts // 40)
-        else:
-            log_every = 1000
+        # Прогресс: каждый текст (много строк в консоли при больших N).
+        log_every = 1
 
         print(
             f"[AnnotationAgent] auto_label: старт, {n_texts} текстов "
-            f"(сообщения каждые {log_every}; первый вызов модели на CPU часто 1–5+ мин).",
+            f"(лог каждого шага; первый вызов модели на CPU часто 1–5+ мин).",
             flush=True,
         )
 

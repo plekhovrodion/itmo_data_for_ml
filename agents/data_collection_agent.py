@@ -28,6 +28,7 @@ class DataCollectionAgent:
     """
 
     def __init__(self, config_path: str = 'config.yaml'):
+        self._project_root = os.path.dirname(os.path.abspath(config_path))
         with open(config_path, 'r', encoding='utf-8') as f:
             self.config = yaml.safe_load(f)
 
@@ -200,6 +201,22 @@ class DataCollectionAgent:
 
         return df
 
+    def _raw_path(self, *parts: str) -> str:
+        return os.path.join(self._project_root, "data", "raw", *parts)
+
+    def _pick_main_kaggle_csv(self, csv_files: List[str]) -> Optional[str]:
+        """Если в архиве несколько CSV, берём самый крупный (не sample)."""
+        if not csv_files:
+            return None
+        existing = [p for p in csv_files if os.path.isfile(p)]
+        if not existing:
+            return None
+        existing.sort(key=lambda p: os.path.getsize(p), reverse=True)
+        for p in existing:
+            if os.path.getsize(p) > 50_000:
+                return p
+        return existing[0]
+
     def _load_kaggle_dataset(self, source: Dict) -> Optional[pd.DataFrame]:
         """Загрузка датасета из Kaggle (локальный файл или API)."""
         dataset_name = source.get('name', 'yutkin/corpus-of-russian-news-articles-from-lenta')
@@ -208,22 +225,31 @@ class DataCollectionAgent:
         print(f"   Загрузка {dataset_name}...")
 
         safe_name = dataset_name.replace('/', '_')
-        local_dir = f"data/raw/kaggle_{safe_name}"
-        local_csv = f"data/raw/kaggle_{safe_name}.csv"
+        local_dir = self._raw_path(f"kaggle_{safe_name}")
+        local_csv = self._raw_path(f"kaggle_{safe_name}.csv")
 
         df = None
 
         if os.path.exists(local_csv):
             df = pd.read_csv(local_csv)
-        elif os.path.exists(local_dir):
+            print(f"   Kaggle: из файла {local_csv}")
+        elif os.path.isdir(local_dir):
             csv_files = glob.glob(os.path.join(local_dir, "**/*.csv"), recursive=True)
-            if csv_files:
-                df = pd.read_csv(csv_files[0])
-        else:
+            pick = self._pick_main_kaggle_csv(csv_files)
+            if pick:
+                df = pd.read_csv(pick)
+                print(f"   Kaggle: из кэша {pick}")
+        if df is None or df.empty:
             df = self._download_kaggle_dataset(dataset_name, local_dir)
 
         if df is None or df.empty:
-            print(f"   Датасет не найден. Скачайте с Kaggle и поместите в data/raw/")
+            kaggle_json = os.path.expanduser("~/.kaggle/kaggle.json")
+            print(
+                f"   Kaggle: не удалось получить данные. Проверьте:\n"
+                f"   • файл {kaggle_json} (chmod 600), см. README;\n"
+                f"   • на сайте датасета нажата кнопка Download / приняты условия;\n"
+                f"   • сеть: архивы часто 100–600+ МБ — дождитесь конца скачивания."
+            )
             return None
 
         if len(df) > limit:
@@ -239,17 +265,32 @@ class DataCollectionAgent:
         try:
             from kaggle.api.kaggle_api_extended import KaggleApi
         except ImportError:
+            print("   Kaggle: установите пакет: pip install kaggle")
+            return None
+
+        kaggle_json = os.path.expanduser("~/.kaggle/kaggle.json")
+        if not os.path.isfile(kaggle_json):
+            print(
+                f"   Kaggle: нет {kaggle_json}. Скопируйте туда kaggle.json из профиля Kaggle "
+                f"(Account → API → Create New Token), chmod 600."
+            )
             return None
 
         try:
             api = KaggleApi()
             api.authenticate()
             os.makedirs(local_dir, exist_ok=True)
-            api.dataset_download_files(dataset_name, path=local_dir, unzip=True, quiet=True)
+            print(
+                f"   Kaggle API: скачивание {dataset_name} (архив может быть большим, идёт прогресс)..."
+            )
+            api.dataset_download_files(dataset_name, path=local_dir, unzip=True, quiet=False)
 
             csv_files = glob.glob(os.path.join(local_dir, "**/*.csv"), recursive=True)
-            if csv_files:
-                return pd.read_csv(csv_files[0])
+            pick = self._pick_main_kaggle_csv(csv_files)
+            if pick:
+                print(f"   Kaggle: прочитан CSV {pick}")
+                return pd.read_csv(pick)
+            print(f"   Kaggle: в {local_dir} не найдено ни одного .csv после распаковки.")
         except Exception as e:
             print(f"   Ошибка Kaggle API: {e}")
         return None

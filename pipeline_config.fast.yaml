@@ -23,3 +23,8 @@ train:
   ngram_range: [1, 2]
   logreg_C: 1.0
   max_iter: 500
+  class_weight: balanced
+  sublinear_tf: true
+  use_full_merged_for_final_model: true
+  final_eval_use_al_holdout: true
+  al_pool_row_weight_boost: 1

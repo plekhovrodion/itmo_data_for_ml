@@ -4,6 +4,7 @@ ActiveLearningAgent — отбор примеров для разметки (ent
 
 from __future__ import annotations
 
+from collections import Counter
 import os
 from typing import Any, Dict, List, Literal, Optional, Sequence, Tuple
 
@@ -79,6 +80,9 @@ class ActiveLearningAgent:
         ngram_range: Tuple[int, int] = (1, 2),
         logreg_C: float = 1.0,
         max_iter: int = 500,
+        class_weight: Optional[str] = "balanced",
+        vectorizer_min_df: Optional[int] = None,
+        sublinear_tf: bool = True,
     ):
         if model != "logreg":
             raise ValueError(f"Поддерживается только model='logreg', передано: {model!r}")
@@ -91,16 +95,26 @@ class ActiveLearningAgent:
         self.ngram_range = ngram_range
         self.logreg_C = logreg_C
         self.max_iter = max_iter
+        self.class_weight = class_weight
+        self.vectorizer_min_df = vectorizer_min_df
+        self.sublinear_tf = sublinear_tf
         self.vectorizer_: Optional[TfidfVectorizer] = None
         self.clf_: Optional[LogisticRegression] = None
 
-    def fit(self, labeled_df: pd.DataFrame) -> "ActiveLearningAgent":
+    def fit(
+        self,
+        labeled_df: pd.DataFrame,
+        sample_weight: Optional[np.ndarray] = None,
+    ) -> "ActiveLearningAgent":
         texts = labeled_df[self.text_col].astype(str).tolist()
-        y = labeled_df[self.label_col].astype(str).values
+        y = pd.Series(labeled_df[self.label_col]).astype(str).str.strip().values
+        n = len(texts)
+        min_df = self.vectorizer_min_df if self.vectorizer_min_df is not None else (1 if n < 800 else 2)
         self.vectorizer_ = TfidfVectorizer(
             max_features=self.max_features,
             ngram_range=self.ngram_range,
-            min_df=2,
+            min_df=min_df,
+            sublinear_tf=self.sublinear_tf,
         )
         X = self.vectorizer_.fit_transform(texts)
         self.clf_ = LogisticRegression(
@@ -108,8 +122,9 @@ class ActiveLearningAgent:
             max_iter=self.max_iter,
             random_state=self.random_state,
             solver="lbfgs",
+            class_weight=self.class_weight,
         )
-        self.clf_.fit(X, y)
+        self.clf_.fit(X, y, sample_weight=sample_weight)
         return self
 
     def _predict_proba_pool(self, pool_df: pd.DataFrame) -> Tuple[np.ndarray, np.ndarray]:
@@ -158,11 +173,16 @@ class ActiveLearningAgent:
         if self.vectorizer_ is None or self.clf_ is None:
             raise RuntimeError("Сначала вызовите fit(labeled_df).")
         X_test = self.vectorizer_.transform(test_df[self.text_col].astype(str).tolist())
-        y_test = test_df[self.label_col].astype(str).values
+        y_test = pd.Series(test_df[self.label_col]).astype(str).str.strip().values
         y_pred = self.clf_.predict(X_test)
+        cnt = Counter(y_test.tolist())
+        maj_n = max(cnt.values()) if cnt else 0
+        maj_baseline = float(maj_n / len(y_test)) if len(y_test) else 0.0
         return {
             "accuracy": float(accuracy_score(y_test, y_pred)),
             "f1": float(f1_score(y_test, y_pred, average="macro", zero_division=0)),
+            "f1_weighted": float(f1_score(y_test, y_pred, average="weighted", zero_division=0)),
+            "majority_class_baseline_accuracy": maj_baseline,
         }
 
     def report(
@@ -219,14 +239,7 @@ class ActiveLearningAgent:
 
         self.fit(labeled)
         m0 = self.evaluate(labeled, test_df)
-        history.append(
-            {
-                "iteration": 0,
-                "n_labeled": int(len(labeled)),
-                "accuracy": m0["accuracy"],
-                "f1": m0["f1"],
-            }
-        )
+        history.append({"iteration": 0, "n_labeled": int(len(labeled)), **m0})
 
         for it in range(1, n_iterations + 1):
             if pool.empty:
@@ -239,14 +252,7 @@ class ActiveLearningAgent:
             labeled = pd.concat([labeled, to_add], axis=0, ignore_index=True)
             self.fit(labeled)
             m = self.evaluate(labeled, test_df)
-            history.append(
-                {
-                    "iteration": it,
-                    "n_labeled": int(len(labeled)),
-                    "accuracy": m["accuracy"],
-                    "f1": m["f1"],
-                }
-            )
+            history.append({"iteration": it, "n_labeled": int(len(labeled)), **m})
 
         return history
 

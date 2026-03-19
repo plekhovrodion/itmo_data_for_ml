@@ -11,6 +11,9 @@ kaggle.json
 notebooks/al_experiment_full.ipynb
 
 # Сбор данных и артефакты пайплайна (см. run_pipeline.py)
+# тестовая папка отладки Kaggle API
+data/raw/kaggle_test_dl/
+
 data/raw/*.csv
 data/raw/**/data.csv
 data/processed/*

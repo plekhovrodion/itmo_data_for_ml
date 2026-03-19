@@ -22,8 +22,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+import numpy as np
 import pandas as pd
 import yaml
+from sklearn.model_selection import train_test_split
 
 from agents.annotation_agent import AnnotationAgent
 from agents.data_collection_agent import DataCollectionAgent
@@ -72,6 +74,23 @@ def _normalized_hitl_label(val: Any) -> Optional[str]:
 def load_pipeline_config(path: Path = DEFAULT_PIPELINE_CONFIG) -> Dict[str, Any]:
     with open(path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f) or {}
+
+
+def _pipeline_logreg_agent(cfg: Dict[str, Any], random_state: int) -> ActiveLearningAgent:
+    """Единые гиперпараметры TF-IDF + LogReg для AL и финального train."""
+    t = cfg.get("train") or {}
+    sub = t.get("sublinear_tf", True)
+    return ActiveLearningAgent(
+        random_state=random_state,
+        text_col="text",
+        label_col="label_final",
+        max_features=int(t.get("max_features") or 30_000),
+        ngram_range=tuple(t.get("ngram_range") or (1, 2)),  # type: ignore[arg-type]
+        logreg_C=float(t.get("logreg_C") or 1.0),
+        max_iter=int(t.get("max_iter") or 500),
+        class_weight=t.get("class_weight", "balanced"),
+        sublinear_tf=bool(sub) if sub is not None else True,
+    )
 
 
 def ensure_dirs() -> None:
@@ -434,21 +453,15 @@ def run_al_cycle(
         initial_labeled=initial_labeled,
         random_state=random_state,
     )
-    agent = ActiveLearningAgent(random_state=random_state)
+    train_rs = int((cfg.get("train") or {}).get("random_state") or random_state)
+    agent = _pipeline_logreg_agent(cfg, train_rs)
     labeled = labeled_df.copy()
     pool = pool_df.copy()
     history: List[Dict[str, Any]] = []
 
     agent.fit(labeled)
     m0 = agent.evaluate(labeled, test_df)
-    history.append(
-        {
-            "iteration": 0,
-            "n_labeled": int(len(labeled)),
-            "accuracy": m0["accuracy"],
-            "f1": m0["f1"],
-        }
-    )
+    history.append({"iteration": 0, "n_labeled": int(len(labeled)), **m0})
 
     for it in range(1, n_iterations + 1):
         if pool.empty:
@@ -461,14 +474,7 @@ def run_al_cycle(
         labeled = pd.concat([labeled, to_add], axis=0, ignore_index=True)
         agent.fit(labeled)
         m = agent.evaluate(labeled, test_df)
-        history.append(
-            {
-                "iteration": it,
-                "n_labeled": int(len(labeled)),
-                "accuracy": m["accuracy"],
-                "f1": m["f1"],
-            }
-        )
+        history.append({"iteration": it, "n_labeled": int(len(labeled)), **m})
 
     return history, labeled, test_df, agent
 
@@ -499,7 +505,10 @@ def step_al(cfg: Dict[str, Any]) -> Tuple[List[Dict[str, Any]], pd.DataFrame, pd
                 initial_labeled=int(al_cfg.get("initial_labeled") or 50),
                 random_state=int(al_cfg.get("random_state") or 42),
             )
-            prep = ActiveLearningAgent(random_state=int(al_cfg.get("random_state") or 42))
+            prep = _pipeline_logreg_agent(
+                cfg,
+                int((cfg.get("train") or {}).get("random_state") or al_cfg.get("random_state") or 42),
+            )
             prep.fit(labeled_df)
             batch_size = int(al_cfg.get("batch_size") or 20)
             idx = prep.query(pool_df, strategy, batch_size)  # type: ignore[arg-type]
@@ -529,23 +538,85 @@ def step_al(cfg: Dict[str, Any]) -> Tuple[List[Dict[str, Any]], pd.DataFrame, pd
     return history, labeled, test_df, agent
 
 
-def step_train(cfg: Dict[str, Any], labeled: pd.DataFrame, test_df: pd.DataFrame) -> None:
+def step_train(
+    cfg: Dict[str, Any],
+    labeled_al: pd.DataFrame,
+    test_df_al: pd.DataFrame,
+    *,
+    merged_df: Optional[pd.DataFrame] = None,
+) -> None:
     train_cfg = cfg.get("train") or {}
     random_state = int(train_cfg.get("random_state") or 42)
-    agent = ActiveLearningAgent(
-        random_state=random_state,
-        max_features=int(train_cfg.get("max_features") or 30_000),
-        ngram_range=tuple(train_cfg.get("ngram_range") or (1, 2)),  # type: ignore[arg-type]
-        logreg_C=float(train_cfg.get("logreg_C") or 1.0),
-        max_iter=int(train_cfg.get("max_iter") or 500),
-    )
-    agent.fit(labeled)
-    metrics = agent.evaluate(labeled, test_df)
+    use_full = train_cfg.get("use_full_merged_for_final_model", True)
+    use_al_test = train_cfg.get("final_eval_use_al_holdout", True)
+
+    train_df: pd.DataFrame
+    test_df: pd.DataFrame
+    train_mode: str
+
+    if use_full and merged_df is not None and len(merged_df) > 0:
+        m = merged_df.dropna(subset=["text", "label_final"]).copy()
+        m["label_final"] = m["label_final"].astype(str).str.strip()
+        m = m[m["label_final"].ne("") & m["label_final"].str.lower().ne("nan")]
+        if (
+            use_al_test
+            and "row_id" in m.columns
+            and "row_id" in test_df_al.columns
+            and len(test_df_al) > 0
+        ):
+            holdout = set(test_df_al["row_id"].astype(int).tolist())
+            test_df = test_df_al.copy()
+            train_df = m.loc[~m["row_id"].astype(int).isin(holdout)].reset_index(drop=True)
+            train_mode = "full_merged_minus_al_holdout"
+        elif len(m) >= 6:
+            ts = float(train_cfg.get("final_test_size") or 0.2)
+            vc = m["label_final"].value_counts()
+            strat = m["label_final"] if bool((vc >= 2).all()) else None
+            train_df, test_df = train_test_split(
+                m,
+                test_size=ts,
+                random_state=random_state,
+                stratify=strat,
+            )
+            train_df = train_df.reset_index(drop=True)
+            test_df = test_df.reset_index(drop=True)
+            train_mode = "full_merged_stratified"
+        else:
+            train_df, test_df = labeled_al, test_df_al
+            train_mode = "al_subset_fallback"
+    else:
+        train_df, test_df = labeled_al, test_df_al
+        train_mode = "al_subset_only"
+
+    agent = _pipeline_logreg_agent(cfg, random_state)
+    boost = train_cfg.get("al_pool_row_weight_boost", 20.0)
+    if boost is None:
+        boost = 20.0
+    boost_f = float(boost)
+    sample_w: Optional[np.ndarray] = None
+    if (
+        boost_f > 1.001
+        and "row_id" in train_df.columns
+        and "row_id" in labeled_al.columns
+        and train_mode != "al_subset_only"
+    ):
+        al_ids = set(labeled_al["row_id"].astype(int).tolist())
+        sample_w = (
+            train_df["row_id"]
+            .astype(int)
+            .map(lambda r, b=boost_f, ids=al_ids: b if r in ids else 1.0)
+            .astype(float)
+            .values
+        )
+    agent.fit(train_df, sample_weight=sample_w)
+    metrics = agent.evaluate(train_df, test_df)
     metrics.update(
         {
-            "n_train": int(len(labeled)),
+            "n_train": int(len(train_df)),
             "n_test": int(len(test_df)),
             "label_col": "label_final",
+            "train_mode": train_mode,
+            "al_pool_row_weight_boost": boost_f if sample_w is not None else None,
             "saved_at": datetime.now(timezone.utc).isoformat(),
         }
     )
@@ -594,8 +665,8 @@ def run_full_pipeline(
         sys.exit(0)
     merged = step_merge_hitl(cfg)
     _history, labeled, test_df, _ = step_al(cfg)
-    step_train(cfg, labeled, test_df)
-    step_finalize(labeled)
+    step_train(cfg, labeled, test_df, merged_df=merged)
+    step_finalize(merged)
 
 
 def main() -> None:
@@ -666,13 +737,14 @@ def main() -> None:
     if args.from_step == "merge-hitl":
         merged = step_merge_hitl(cfg)
         _history, labeled, test_df, _ = step_al(cfg)
-        step_train(cfg, labeled, test_df)
-        step_finalize(labeled)
+        step_train(cfg, labeled, test_df, merged_df=merged)
+        step_finalize(merged)
         return
     if args.from_step == "al":
+        merged = _load_merged_df()
         _history, labeled, test_df, _ = step_al(cfg)
-        step_train(cfg, labeled, test_df)
-        step_finalize(labeled)
+        step_train(cfg, labeled, test_df, merged_df=merged)
+        step_finalize(merged)
         return
     if args.from_step == "train":
         raise SystemExit(
