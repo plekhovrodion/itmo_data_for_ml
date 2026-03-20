@@ -1,0 +1,11 @@
+{
+  "label_dist": {
+    "budget": 0.3516,
+    "mid": 0.3267,
+    "premium": 0.3217
+  },
+  "confidence_mean": 0.8114900169109017,
+  "kappa": null,
+  "note": "колонка label_human отсутствует — эталон только label_segment_ref",
+  "agreement_with_ref_pct": 0.9223327805417357
+}

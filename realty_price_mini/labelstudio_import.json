@@ -1,0 +1,1152 @@
+[
+  {
+    "data": {
+      "text": "Регион 66, 1 комн., 30.3 м²",
+      "id": "row_0"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "mid"
+              ]
+            }
+          }
+        ],
+        "score": 0.6805100081975055
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 1, 1 комн., 33.0 м²",
+      "id": "row_1"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "budget"
+              ]
+            }
+          }
+        ],
+        "score": 0.6839060518292328
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 50, 3 комн., 85.0 м²",
+      "id": "row_2"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "premium"
+              ]
+            }
+          }
+        ],
+        "score": 0.8082888441902255
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 1, 3 комн., 82.0 м²",
+      "id": "row_3"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "budget"
+              ]
+            }
+          }
+        ],
+        "score": 0.9001889630381731
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 23, 1 комн., 30.0 м²",
+      "id": "row_4"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "mid"
+              ]
+            }
+          }
+        ],
+        "score": 0.8547350933649503
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 34, 2 комн., 47.0 м²",
+      "id": "row_5"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "budget"
+              ]
+            }
+          }
+        ],
+        "score": 0.8731476841907941
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 54, 3 комн., 107.4 м²",
+      "id": "row_6"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "mid"
+              ]
+            }
+          }
+        ],
+        "score": 0.6943697958713961
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 3, 3 комн., 54.0 м²",
+      "id": "row_7"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "budget"
+              ]
+            }
+          }
+        ],
+        "score": 0.5533361816221717
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 23, 1 комн., 39.7 м²",
+      "id": "row_8"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "mid"
+              ]
+            }
+          }
+        ],
+        "score": 0.4985872386868905
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 58, 2 комн., 53.2 м²",
+      "id": "row_9"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "budget"
+              ]
+            }
+          }
+        ],
+        "score": 0.8189928912220884
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 77, -1 комн., 10.1 м²",
+      "id": "row_10"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "premium"
+              ]
+            }
+          }
+        ],
+        "score": 0.991249747321609
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 72, 3 комн., 100.0 м²",
+      "id": "row_11"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "mid"
+              ]
+            }
+          }
+        ],
+        "score": 0.5505540129674383
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 50, -1 комн., 32.4 м²",
+      "id": "row_12"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "mid"
+              ]
+            }
+          }
+        ],
+        "score": 0.6033687165393627
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 54, 2 комн., 40.0 м²",
+      "id": "row_13"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "mid"
+              ]
+            }
+          }
+        ],
+        "score": 0.8186102422588678
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 50, 2 комн., 62.4 м²",
+      "id": "row_14"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "premium"
+              ]
+            }
+          }
+        ],
+        "score": 0.9788067293085841
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 78, 2 комн., 66.7 м²",
+      "id": "row_15"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "premium"
+              ]
+            }
+          }
+        ],
+        "score": 0.9427272271004162
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 72, -1 комн., 26.0 м²",
+      "id": "row_16"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "mid"
+              ]
+            }
+          }
+        ],
+        "score": 0.6598537881915921
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 34, 3 комн., 62.4 м²",
+      "id": "row_17"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "budget"
+              ]
+            }
+          }
+        ],
+        "score": 0.9307664079247296
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 76, 3 комн., 61.0 м²",
+      "id": "row_18"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "budget"
+              ]
+            }
+          }
+        ],
+        "score": 0.8113661656667652
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 2, 2 комн., 56.8 м²",
+      "id": "row_19"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "mid"
+              ]
+            }
+          }
+        ],
+        "score": 0.7645773776811807
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 40, 1 комн., 49.7 м²",
+      "id": "row_20"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "budget"
+              ]
+            }
+          }
+        ],
+        "score": 0.6088470066085553
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 23, 2 комн., 62.9 м²",
+      "id": "row_21"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "mid"
+              ]
+            }
+          }
+        ],
+        "score": 0.7973230029001549
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 23, 2 комн., 55.0 м²",
+      "id": "row_22"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "mid"
+              ]
+            }
+          }
+        ],
+        "score": 0.763035960810839
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 73, 2 комн., 46.1 м²",
+      "id": "row_23"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "budget"
+              ]
+            }
+          }
+        ],
+        "score": 0.9465854417162671
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 18, 3 комн., 60.0 м²",
+      "id": "row_24"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "budget"
+              ]
+            }
+          }
+        ],
+        "score": 0.7948600259449674
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 48, 3 комн., 70.7 м²",
+      "id": "row_25"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "budget"
+              ]
+            }
+          }
+        ],
+        "score": 0.8907555831381846
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 27, 3 комн., 64.0 м²",
+      "id": "row_26"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "budget"
+              ]
+            }
+          }
+        ],
+        "score": 0.6775000405447186
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 23, 1 комн., 32.0 м²",
+      "id": "row_27"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "mid"
+              ]
+            }
+          }
+        ],
+        "score": 0.9773072238710829
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 72, 1 комн., 36.0 м²",
+      "id": "row_28"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "mid"
+              ]
+            }
+          }
+        ],
+        "score": 0.848482789712909
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 41, 1 комн., 34.0 м²",
+      "id": "row_29"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "mid"
+              ]
+            }
+          }
+        ],
+        "score": 0.5814111788387805
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 3, 3 комн., 54.0 м²",
+      "id": "row_30"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "budget"
+              ]
+            }
+          }
+        ],
+        "score": 0.6542029600180288
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 76, 1 комн., 31.0 м²",
+      "id": "row_31"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "budget"
+              ]
+            }
+          }
+        ],
+        "score": 0.8072870307703203
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 63, 3 комн., 57.9 м²",
+      "id": "row_32"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "budget"
+              ]
+            }
+          }
+        ],
+        "score": 0.8801886896317203
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 40, 1 комн., 40.0 м²",
+      "id": "row_33"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "mid"
+              ]
+            }
+          }
+        ],
+        "score": 0.5223320654901206
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 50, 1 комн., 37.0 м²",
+      "id": "row_34"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "premium"
+              ]
+            }
+          }
+        ],
+        "score": 0.9931450314433378
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 1, 3 комн., 62.0 м²",
+      "id": "row_35"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "budget"
+              ]
+            }
+          }
+        ],
+        "score": 0.9270649466279485
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 77, 3 комн., 109.0 м²",
+      "id": "row_36"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "premium"
+              ]
+            }
+          }
+        ],
+        "score": 0.9870832071328873
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 38, 1 комн., 32.0 м²",
+      "id": "row_37"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "mid"
+              ]
+            }
+          }
+        ],
+        "score": 0.5535448318980374
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 77, 3 комн., 69.8 м²",
+      "id": "row_38"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "premium"
+              ]
+            }
+          }
+        ],
+        "score": 0.9701896630834494
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 1, 3 комн., 56.6 м²",
+      "id": "row_39"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "budget"
+              ]
+            }
+          }
+        ],
+        "score": 0.8880497817247698
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 15, 2 комн., 54.0 м²",
+      "id": "row_40"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "budget"
+              ]
+            }
+          }
+        ],
+        "score": 0.8357776717276744
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 23, 2 комн., 50.0 м²",
+      "id": "row_41"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "premium"
+              ]
+            }
+          }
+        ],
+        "score": 0.5130783358943725
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 10, 1 комн., 29.9 м²",
+      "id": "row_42"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "budget"
+              ]
+            }
+          }
+        ],
+        "score": 0.8030187160334219
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 39, 2 комн., 50.4 м²",
+      "id": "row_43"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "mid"
+              ]
+            }
+          }
+        ],
+        "score": 0.8157990084373709
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 63, 2 комн., 48.0 м²",
+      "id": "row_44"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "budget"
+              ]
+            }
+          }
+        ],
+        "score": 0.8165905451029606
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 23, 3 комн., 67.1 м²",
+      "id": "row_45"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "mid"
+              ]
+            }
+          }
+        ],
+        "score": 0.7373974917536116
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 23, 1 комн., 45.2 м²",
+      "id": "row_46"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "budget"
+              ]
+            }
+          }
+        ],
+        "score": 0.5264611360062569
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 23, 3 комн., 66.0 м²",
+      "id": "row_47"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "mid"
+              ]
+            }
+          }
+        ],
+        "score": 0.7339992233553433
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 34, 2 комн., 46.5 м²",
+      "id": "row_48"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "budget"
+              ]
+            }
+          }
+        ],
+        "score": 0.8794516826366746
+      }
+    ]
+  },
+  {
+    "data": {
+      "text": "Регион 86, 2 комн., 56.0 м²",
+      "id": "row_49"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "segment",
+            "to_name": "text",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "mid"
+              ]
+            }
+          }
+        ],
+        "score": 0.7056745615496153
+      }
+    ]
+  }
+]

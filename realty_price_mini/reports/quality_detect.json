@@ -1,0 +1,74 @@
+{
+  "n_rows": 8100,
+  "n_cols": 27,
+  "missing": {
+    "per_column": {
+      "price_per_m2": 0,
+      "total_price_rub": 0,
+      "area_m2": 0,
+      "rooms": 0,
+      "city_or_region": 0,
+      "address_text": 8000,
+      "geo_lat": 0,
+      "geo_lon": 0,
+      "source": 0,
+      "listing_url": 8000,
+      "text": 0,
+      "audio": 8100,
+      "image": 8000,
+      "label": 0,
+      "collected_at": 0,
+      "date": 100,
+      "price": 100,
+      "level": 100,
+      "levels": 100,
+      "area": 100,
+      "kitchen_area": 100,
+      "building_type": 100,
+      "object_type": 100,
+      "postal_code": 620,
+      "street_id": 2659,
+      "id_region": 100,
+      "house_id": 1730
+    },
+    "total_cells": 38009,
+    "fraction_of_cells": 0.17379515317786923
+  },
+  "duplicates": {
+    "full_row": 52,
+    "subset": [
+      "price_per_m2",
+      "area_m2",
+      "total_price_rub",
+      "source"
+    ],
+    "subset_duplicates": 864
+  },
+  "outliers": {
+    "method": "IQR",
+    "iqr_multiplier": 1.5,
+    "per_column": {
+      "price_per_m2": 480,
+      "total_price_rub": 648,
+      "area_m2": 357
+    },
+    "rows_with_any_outlier": 989
+  },
+  "imbalance": {
+    "kind": "continuous_binned",
+    "bins": 10,
+    "entropy": 2.302583568081223,
+    "bin_counts": {
+      "(74626.87, 86956.52]": 812,
+      "(36543.951, 47970.0]": 811,
+      "(47970.0, 56970.0]": 811,
+      "(65242.618, 74626.87]": 811,
+      "(24.308999999999997, 36543.951]": 810,
+      "(110571.443, 156873.086]": 810,
+      "(156873.086, 212769.754]": 810,
+      "(212769.754, 72881355.93]": 810,
+      "(56970.0, 65242.618]": 808,
+      "(86956.52, 110571.443]": 807
+    }
+  }
+}

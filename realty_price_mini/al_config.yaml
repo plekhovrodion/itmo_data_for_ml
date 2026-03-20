@@ -1,0 +1,11 @@
+# Active Learning: сравнение query-стратегии с random baseline
+al:
+  target_column: label_segment_ref
+  test_size: 0.2
+  seed_size: 500
+  batch_size: 150
+  n_iterations: 5
+  random_state: 42
+  strategies_compare:
+    - entropy
+    - random

@@ -1,0 +1,26 @@
+# Conservative: удаляем строки с выбросами по IQR (меньше шумa, меньше строк)
+
+label_column: label
+iqr_multiplier: 1.5
+
+missing:
+  numeric: median
+  object_fill: ""
+
+duplicates:
+  mode: drop
+  subset:
+    - price_per_m2
+    - area_m2
+    - total_price_rub
+    - source
+  keep: first
+
+outliers:
+  mode: drop_iqr
+  columns:
+    - price_per_m2
+    - total_price_rub
+    - area_m2
+
+coerce_city_or_region_str: true

@@ -1,0 +1,102 @@
+{
+  "main": [
+    {
+      "iteration": 0,
+      "phase": "after_seed",
+      "n_labeled": 500,
+      "n_pool": 5288,
+      "accuracy": 0.7341160220994475,
+      "f1_macro": 0.7333043333122867
+    },
+    {
+      "iteration": 1,
+      "phase": "entropy",
+      "n_labeled": 650,
+      "n_pool": 5138,
+      "accuracy": 0.7424033149171271,
+      "f1_macro": 0.7418600937119456
+    },
+    {
+      "iteration": 2,
+      "phase": "entropy",
+      "n_labeled": 800,
+      "n_pool": 4988,
+      "accuracy": 0.7493093922651933,
+      "f1_macro": 0.7494411661943191
+    },
+    {
+      "iteration": 3,
+      "phase": "entropy",
+      "n_labeled": 950,
+      "n_pool": 4838,
+      "accuracy": 0.7638121546961326,
+      "f1_macro": 0.7633114678352456
+    },
+    {
+      "iteration": 4,
+      "phase": "entropy",
+      "n_labeled": 1100,
+      "n_pool": 4688,
+      "accuracy": 0.7603591160220995,
+      "f1_macro": 0.760598160847282
+    },
+    {
+      "iteration": 5,
+      "phase": "entropy",
+      "n_labeled": 1250,
+      "n_pool": 4538,
+      "accuracy": 0.774171270718232,
+      "f1_macro": 0.7737977404589951
+    }
+  ],
+  "random_baseline": [
+    {
+      "iteration": 0,
+      "phase": "after_seed",
+      "n_labeled": 500,
+      "n_pool": 5288,
+      "accuracy": 0.7341160220994475,
+      "f1_macro": 0.7333043333122867
+    },
+    {
+      "iteration": 1,
+      "phase": "random",
+      "n_labeled": 650,
+      "n_pool": 5138,
+      "accuracy": 0.7562154696132597,
+      "f1_macro": 0.756308401519524
+    },
+    {
+      "iteration": 2,
+      "phase": "random",
+      "n_labeled": 800,
+      "n_pool": 4988,
+      "accuracy": 0.7541436464088398,
+      "f1_macro": 0.7544431708753451
+    },
+    {
+      "iteration": 3,
+      "phase": "random",
+      "n_labeled": 950,
+      "n_pool": 4838,
+      "accuracy": 0.7651933701657458,
+      "f1_macro": 0.7649206855210778
+    },
+    {
+      "iteration": 4,
+      "phase": "random",
+      "n_labeled": 1100,
+      "n_pool": 4688,
+      "accuracy": 0.7755524861878453,
+      "f1_macro": 0.7760031638795404
+    },
+    {
+      "iteration": 5,
+      "phase": "random",
+      "n_labeled": 1250,
+      "n_pool": 4538,
+      "accuracy": 0.7755524861878453,
+      "f1_macro": 0.7767308774409164
+    }
+  ]
+}

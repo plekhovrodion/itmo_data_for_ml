@@ -1,0 +1,6 @@
+metric,before,after,delta
+rows,8100.0,7236.0,-864.0
+missing_cells_total,38009.0,0.0,-38009.0
+duplicate_subset,864.0,116.0,-748.0
+outlier_rows_any,989.0,0.0,-989.0
+label_binned_entropy,2.302583568081223,2.3025814255436545,-2.142537568694536e-06

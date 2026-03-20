@@ -1,0 +1,21 @@
+# Сбор: Kaggle (цена за м²) + HTML etagi.com
+
+kaggle:
+  dataset: "mrdaniilak/russia-real-estate-2021"
+  sep: ";"
+  max_rows: 8000
+  # колонки: date, price, area, ... → price_per_m2 = price / area
+
+etagi:
+  base_url: "https://spb.etagi.com/realty/flats/"
+  # первая страница: base_url ; далее: .../page/2/ ...
+  max_rows: 100
+  request_timeout_sec: 30
+  pause_sec: 1.2
+  user_agent: "Mozilla/5.0 (compatible; RealtyPriceMini/1.0; +edu research)"
+
+output:
+  dir: "data/raw"
+  kaggle_csv: "kaggle_russia_realestate_m2.csv"
+  etagi_csv: "etagi_spb_flats_m2.csv"
+  merged_csv: "merged_price_m2.csv"

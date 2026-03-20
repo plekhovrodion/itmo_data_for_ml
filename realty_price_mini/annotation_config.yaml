@@ -1,0 +1,8 @@
+annotation:
+  modality: tabular
+  task: price_segment
+  # сегменты по терциям price_per_m2 на всём кадре (эталон для обучения RF)
+  segment_labels: [budget, mid, premium]
+  ls_export_max: 50
+  low_confidence_threshold: 0.55
+  random_state: 42
